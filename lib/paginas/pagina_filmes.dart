@@ -6,6 +6,7 @@ class PaginaFilmes extends StatefulWidget {
   const PaginaFilmes({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _PaginaFilmesState createState() =>
       _PaginaFilmesState(); // Cria o estado associado a este widget.
 }
@@ -36,10 +37,17 @@ class _PaginaFilmesState extends State<PaginaFilmes> {
 
   // Função para pesquisar filmes na API do TMDB.
   void _pesquisarFilmes(String query) {
+    query = query.trim(); // Remove espaços em branco da query.
+    if (query.isEmpty) {
+      setState(() {
+        _movies = _tmdbService.fetchMovies(); 
+      });; // Retorna se a query estiver vazia.
+    }else{
     setState(() {
       _movies = _tmdbService.searchMovies(
           query); // Atualiza a lista de filmes com base na pesquisa.
     });
+    }
   }
 
   @override
@@ -67,7 +75,8 @@ class _PaginaFilmesState extends State<PaginaFilmes> {
                 ),
               ),
               onSubmitted:
-                  _pesquisarFilmes, // Chama a função de pesquisa ao submeter o texto.
+                  _pesquisarFilmes,
+                   // Chama a função de pesquisa ao submeter o texto.
             ),
           ),
         ),
@@ -133,7 +142,7 @@ class _PaginaFilmesState extends State<PaginaFilmes> {
                             'Min: ${movie['runtime'] ?? 'N/A'}'), // Exibe a duração do filme.
                       ],
                     ),
-                    trailing: Icon(Icons.play_arrow,
+                    trailing: const Icon(Icons.play_arrow,
                         color: Colors.indigo), // Ícone de play.
                     selected: true,
                     selectedTileColor: Colors.blue[50],
